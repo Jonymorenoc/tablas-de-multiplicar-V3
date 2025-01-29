@@ -1,52 +1,22 @@
-/*****************************************
- *     TRUCOS (para niños de 6 a 8 años) *
- *****************************************/
+/*********************************************
+ *   TRUCOS SIMPLES (para niños 6 a 8 años)  *
+ *********************************************/
 const tableTips = {
-  1: {
-    main: "Cuando multiplicas por 1, el número sigue siendo el mismo.",
-    extra: "Por ejemplo, 7 × 1 = 7. ¡Fácil!"
-  },
-  2: {
-    main: "Sumar el número dos veces. 2 × 4 = 4 + 4 = 8.",
-    extra: "Piensa en parejas de objetos."
-  },
-  3: {
-    main: "Suma el número tres veces. 3 × 5 = 5 + 5 + 5 = 15.",
-    extra: "Dibuja 3 grupos iguales con la misma cantidad."
-  },
-  4: {
-    main: "Es como hacer 2 × 2 veces. 4 × 3 = (2×3)+(2×3).",
-    extra: "4 grupos son el doble de 2 grupos."
-  },
-  5: {
-    main: "Los resultados terminan en 0 o 5. 5 × 4 = 20.",
-    extra: "Cuenta de 5 en 5: 5, 10, 15, 20..."
-  },
-  6: {
-    main: "Es como 3 × 2 veces. 6 × 4 = (3×4)+(3×4).",
-    extra: "Los números son siempre pares."
-  },
-  7: {
-    main: "7 puede ser difícil. Practica: 7, 14, 21, 28...",
-    extra: "Memoriza de 7 en 7 y será más fácil."
-  },
-  8: {
-    main: "El doble de 4. 8 × 3 = (4×3)+(4×3).",
-    extra: "Piensa en 8 como 2 grupos de 4."
-  },
-  9: {
-    main: "Truco de dedos: baja el dedo n°(multiplicación) y cuenta lados.",
-    extra: "O cuenta de 9 en 9: 9, 18, 27..."
-  },
-  10: {
-    main: "Agrega un 0 al final. 10 × 4 = 40.",
-    extra: "¡La tabla más fácil de todas!"
-  }
+  1:  "Multiplicar por 1 no cambia el número.",
+  2:  "Forma parejas para contar más fácil.",
+  3:  "Suma 3 veces el mismo número.",
+  4:  "Piensa en 2 y 2 (doble del doble).",
+  5:  "Cuenta de 5 en 5: 5, 10, 15, 20...",
+  6:  "Piensa en 3 x 2 (dos veces la tabla del 3).",
+  7:  "Cuenta de 7 en 7 (7, 14, 21...).",
+  8:  "Es doble de 4. (4 + 4).",
+  9:  "Cuenta de 9 en 9 (9, 18, 27...).",
+  10: "Agrega un 0 al final."
 };
 
-/****************************************
- *    EMOJIS PARA LA AYUDA VISUAL       *
- ****************************************/
+/*****************************************
+ * EMOJIS PARA MOSTRAR GRUPOS VISUALMENTE
+ *****************************************/
 const tableEmojis = {
   1: "🍎",  // Manzana
   2: "🍌",  // Plátano
@@ -60,49 +30,50 @@ const tableEmojis = {
   10: "🔟"  // Símbolo 10
 };
 
-/****************************************
- *  MENSAJES MOTIVACIONALES (niños)     *
- ****************************************/
+/**********************************************
+ *  MENSAJES MOTIVACIONALES CADA 5 ACIERTOS   *
+ **********************************************/
 const motivationalMessages = [
-  "¡Muy bien! Sigue así.",
-  "¡Genial! ¡Sigue practicando!",
-  "¡Racha de 5! ¡Súper trabajo!",
-  "¡Eres increíble!"
+  "¡Súper! Sigue así.",
+  "¡Muy bien! Eres un campeón.",
+  "¡Racha de 5! ¡Felicidades!",
+  "¡Estás aprendiendo muy rápido!"
 ];
 
-/****************************************
- *   REFERENCIAS A ELEMENTOS DEL DOM    *
- ****************************************/
-const startBtn = document.getElementById('start-btn');
-const tableButtons = document.querySelectorAll('.table-btn');
+/***********************************************
+ *   REFERENCIAS A ELEMENTOS DEL DOCUMENTO     *
+ ***********************************************/
+const startBtn      = document.getElementById('start-btn');
+const tableButtons  = document.querySelectorAll('.table-btn');
 const questionContainer = document.getElementById('question-container');
-const questionEl = document.getElementById('question');
-const answerEl = document.getElementById('answer');
-const resultEl = document.getElementById('result');
-const submitBtn = document.getElementById('submit-btn');
-const nextBtn = document.getElementById('next-btn');
-const streakCount = document.getElementById('streak-count');
-const correctSound = document.getElementById('correct-sound');
-const incorrectSound = document.getElementById('incorrect-sound');
+const questionEl    = document.getElementById('question');
+const answerEl      = document.getElementById('answer');
+const resultEl      = document.getElementById('result');
+const submitBtn     = document.getElementById('submit-btn');
+const nextBtn       = document.getElementById('next-btn');
+const hintBtn       = document.getElementById('hint-btn');
+const streakCount   = document.getElementById('streak-count');
+const correctSound  = document.getElementById('correct-sound');
+const incorrectSound= document.getElementById('incorrect-sound');
 
-// Estrellas (5 máximas)
+// 5 estrellas
 const starsEl = document.querySelectorAll('.stars span');
 
-/****************************************
- *           VARIABLES GLOBALES         *
- ****************************************/
-let selectedTables = [];
-let currentQuestion = {};
+/****************************************************
+ *           VARIABLES GLOBALES Y ESTADO            *
+ ****************************************************/
+let selectedTables      = [];
+let currentQuestion     = {};
 let confetti;
-let streak = 0;
-let consecutiveFails = 0;
-let lastFailedTable = null;
+let streak              = 0;
+let attemptsForQuestion = 0; // Para saber si es primer error o segundo error
+let isHintShown         = false; // Para saber si ya se mostró la pista en esta pregunta
 
-/****************************************
- *         EVENTOS Y FUNCIONES          *
- ****************************************/
+/****************************************************
+ *       CONFIGURACIÓN DE EVENTOS PRINCIPALES       *
+ ****************************************************/
 
-// Manejo de selección de tablas
+// Selección de tablas
 tableButtons.forEach(button => {
   button.addEventListener('click', () => {
     button.classList.toggle('selected');
@@ -126,204 +97,219 @@ startBtn.addEventListener('click', () => {
   generateQuestion();
 });
 
-/**
- * Genera una pregunta nueva, con "peso" extra para la tabla fallada
- * si hay fallos consecutivos.
- */
+// Botón "Responder"
+submitBtn.addEventListener('click', () => {
+  const userAnswer = parseInt(answerEl.value);
+
+  // Si no ha escrito nada
+  if (isNaN(userAnswer)) {
+    alert('Escribe un número para responder');
+    return;
+  }
+
+  if (userAnswer === currentQuestion.answer) {
+    // Respuesta correcta
+    handleCorrectAnswer();
+  } else {
+    // Respuesta incorrecta
+    handleWrongAnswer();
+  }
+});
+
+// Botón "Pista" (muestra emojis y truco, sin la respuesta)
+hintBtn.addEventListener('click', () => {
+  if (!isHintShown) {
+    showHint(false);
+    isHintShown = true;
+  }
+});
+
+// Botón "Siguiente"
+nextBtn.addEventListener('click', () => {
+  confetti?.clear();
+  resetUI();
+  generateQuestion();
+});
+
+/***************************************************
+ *    FUNCIONES: GENERAR PREGUNTA, EVALUAR RESULT  *
+ ***************************************************/
+
+/** Genera una nueva pregunta y resetea estado */
 function generateQuestion() {
-  // Limpia estado anterior
+  // Limpia la UI
+  questionEl.textContent = '';
   resultEl.innerHTML = '';
   resultEl.classList.add('hidden');
   answerEl.value = '';
   answerEl.focus();
+  nextBtn.classList.add('hidden');
+  hintBtn.classList.remove('hidden');
+  hintBtn.classList.add('hidden');  // Ocultamos la pista hasta que inicie la pregunta
   confetti?.clear();
 
-  // Lista "ponderada": si falló varias veces seguidas en la misma tabla,
-  // esa tabla aparece más seguido para reforzar.
-  const weightedTables = selectedTables.flatMap(table => 
-    Array(10 - (consecutiveFails > 1 && table === lastFailedTable ? 5 : 0)).fill(table)
-  );
-  
-  // Elige una tabla aleatoria de la lista
-  const table = weightedTables[Math.floor(Math.random() * weightedTables.length)];
-  // Número aleatorio del 1 al 10
+  attemptsForQuestion = 0;
+  isHintShown = false;
+
+  // Ajuste: mostramos el botón de pista desde el inicio de la pregunta:
+  hintBtn.classList.remove('hidden');
+
+  // Selecciona una tabla al azar de las elegidas
+  const table = randomFromArray(selectedTables);
   const number = Math.floor(Math.random() * 10) + 1;
-  
+
   currentQuestion = {
     table,
     number,
     answer: table * number
   };
-  
+
   questionEl.textContent = `${table} × ${number}`;
 }
 
-// Botón "Responder"
-submitBtn.addEventListener('click', () => {
-  const userAnswer = parseInt(answerEl.value);
-  
-  if (isNaN(userAnswer)) {
-    alert('Escribe un número para responder');
-    return;
-  }
-  
-  const isCorrect = (userAnswer === currentQuestion.answer);
-  handleAnswerFeedback(isCorrect);
-  updateStreak(isCorrect);
-  showTips(isCorrect);
-  
-  if (!isCorrect) {
-    consecutiveFails++;
-    lastFailedTable = currentQuestion.table;
-    if (consecutiveFails >= 2) {
-      showVisualHelp();
-    }
-  } else {
-    consecutiveFails = 0;
-  }
-  
-  nextBtn.classList.remove('hidden');
-});
-
-/**
- * Muestra feedback visual y sonoro, además del confeti si es correcto.
- */
-function handleAnswerFeedback(isCorrect) {
-  resultEl.classList.remove('hidden');
-  resultEl.className = isCorrect ? 'correct-message' : 'incorrect-message';
-  resultEl.innerHTML = isCorrect
-    ? '¡Correcto! ¡Felicidades!'
-    : `Incorrecto. La respuesta es: ${currentQuestion.answer}`;
-  
-  // Reproduce el sonido correspondiente
-  (isCorrect ? correctSound : incorrectSound).play();
-  
-  // Confeti si acierta
-  if (isCorrect) {
-    confetti = new ConfettiGenerator({
-      target: 'confetti-canvas',
-      max: 80,
-      size: 1,
-      animate: true,
-      colors: [[74, 144, 226], [245, 166, 35], [46, 204, 113]],
-      clock: 25
-    });
-    confetti.render();
-  }
-}
-
-/**
- * Muestra los tips específicos de la tabla y un refuerzo si acierta.
- */
-function showTips(isCorrect) {
-  const tipData = tableTips[currentQuestion.table];
-  if (!tipData) return;
-  
-  const tipBox = document.createElement('div');
-  tipBox.className = 'tip-box';
-  
-  const mainTip = `<div class="help-text">${tipData.main}</div>`;
-  const extraTip = tipData.extra 
-    ? `<div class="help-text">${tipData.extra}</div>`
-    : '';
-  
-  if (isCorrect) {
-    // Mensaje especial cuando acierta
-    tipBox.innerHTML = `
-      <div class="help-text">¡Bien hecho! Recuerda este truco:</div>
-      ${mainTip}
-      ${extraTip}
-    `;
-  } else {
-    // Si falla, se muestra la respuesta y el truco
-    tipBox.innerHTML = `
-      ${mainTip}
-      <div class="help-text">Ejemplo: ${currentQuestion.table} × ${currentQuestion.number} = ${currentQuestion.answer}</div>
-      ${extraTip}
-    `;
-  }
-  
-  resultEl.appendChild(tipBox);
-}
-
-/**
- * Muestra ayuda visual con emojis tras fallar 2 veces seguidas.
- * Cada fila representa un "grupo" de la multiplicación.
- */
-function showVisualHelp() {
-  const visualHelp = document.createElement('div');
-  visualHelp.className = 'visual-help';
-  
-  // Usamos un emoji distinto según la tabla
-  const emoji = tableEmojis[currentQuestion.table] || "🔵";
-
-  // Construimos la vista en filas: para "table" grupos,
-  // cada fila tiene "number" emojis.
-  let rowsHTML = '';
-  for (let i = 0; i < currentQuestion.table; i++) {
-    rowsHTML += `
-      <div class="emoji-row">${emoji.repeat(currentQuestion.number)}</div>
-    `;
-  }
-
-  // También mostramos la suma numérica
-  const numericGroups = Array.from({ length: currentQuestion.table }, () => currentQuestion.number).join(' + ');
-
-  visualHelp.innerHTML = `
-    <div class="help-text">Esta multiplicación es: ${currentQuestion.table} grupos de ${currentQuestion.number}.</div>
-    ${rowsHTML}
-    <div class="help-text">En números: ${numericGroups} = ${currentQuestion.answer}</div>
-  `;
-  
-  resultEl.appendChild(visualHelp);
-}
-
-/**
- * Actualiza la racha de aciertos y las estrellas (hasta 5).
- */
-function updateStreak(isCorrect) {
-  streak = isCorrect ? (streak + 1) : 0;
+/** Maneja respuesta correcta */
+function handleCorrectAnswer() {
+  // Mostramos mensaje
+  showResult(true, "¡Bien hecho! Respuesta correcta.");
+  // Actualizamos racha
+  streak++;
   streakCount.textContent = streak;
   updateStarsUI();
-  
-  // Si se desea, se puede mostrar un mensaje motivacional cada 5 aciertos.
-  if (isCorrect && streak > 0 && streak % 5 === 0) {
+
+  // Sonido + confeti
+  correctSound.play();
+  launchConfetti();
+
+  // Mensaje motivacional cada 5
+  if (streak > 0 && streak % 5 === 0) {
     showMotivationalMessage();
   }
+
+  // Habilitar botón "Siguiente"
+  nextBtn.classList.remove('hidden');
+  // Ocultar botón pista (ya no es necesaria)
+  hintBtn.classList.add('hidden');
 }
 
-/**
- * Enciende/apaga las 5 estrellas según la racha.
- * Al superar 5, quedan las 5 iluminadas (indicando “tope”).
- */
+/** Maneja respuesta incorrecta */
+function handleWrongAnswer() {
+  attemptsForQuestion++;
+
+  // Si es el primer error, mostramos emojis + truco (pero NO respuesta)
+  if (attemptsForQuestion === 1) {
+    // Mostramos mensaje de "Intenta de nuevo"
+    showResult(false, "¡Inténtalo otra vez!");
+    // Mostramos la pista (emojis + truco), aunque sea auto
+    showHint(false);
+
+  } else if (attemptsForQuestion === 2) {
+    // Segundo error: mostramos la respuesta
+    showResult(false, `La respuesta correcta es: ${currentQuestion.answer}`);
+    showHint(true); // Ahora sí mostramos la respuesta junto con los emojis
+    // Racha se reinicia
+    streak = 0;
+    streakCount.textContent = streak;
+    updateStarsUI();
+    // Habilitamos "Siguiente"
+    nextBtn.classList.remove('hidden');
+    hintBtn.classList.add('hidden');
+  }
+
+  // Reproducir sonido incorrecto
+  incorrectSound.play();
+}
+
+/** Muestra u oculta elementos en #result con estilo */
+function showResult(isCorrect, text) {
+  resultEl.classList.remove('hidden');
+  resultEl.className = isCorrect ? 'correct-message' : 'incorrect-message';
+  resultEl.innerHTML = text;
+}
+
+/** Lanza confeti al acertar */
+function launchConfetti() {
+  confetti = new ConfettiGenerator({
+    target: 'confetti-canvas',
+    max: 80,
+    size: 1,
+    animate: true,
+    colors: [[74, 144, 226], [245, 166, 35], [46, 204, 113]],
+    clock: 25
+  });
+  confetti.render();
+}
+
+/****************************************************
+ *     MOSTRAR PISTA: EMOJIS Y TRUCO (SIN RESPUESTA)
+ *     Si showAnswer === true, también muestra la respuesta.
+ ****************************************************/
+function showHint(showAnswer) {
+  // Creamos un contenedor de ayuda
+  const hintBox = document.createElement('div');
+  hintBox.className = 'visual-help';
+
+  const emoji = tableEmojis[currentQuestion.table] || "🔵";
+  const tip   = tableTips[currentQuestion.table] || "";
+
+  // Construimos las filas de emojis (table grupos, cada grupo con number emojis)
+  let rowsHTML = '';
+  for (let i = 0; i < currentQuestion.table; i++) {
+    rowsHTML += `<div class="emoji-row">${emoji.repeat(currentQuestion.number)}</div>`;
+  }
+
+  // Texto explicativo muy simple
+  // showAnswer = true => mostramos la respuesta final
+  const responseText = showAnswer 
+    ? `<div class="help-text">Respuesta: ${currentQuestion.answer}</div>`
+    : "";
+
+  // Un truco muy corto
+  const shortTrick = `<div class="help-text">Truco: ${tip}</div>`;
+
+  // Estructura final
+  hintBox.innerHTML = `
+    <div class="help-text"><strong>Piensa en grupos:</strong></div>
+    ${rowsHTML}
+    ${shortTrick}
+    ${responseText}
+  `;
+
+  // Lo agregamos al #result
+  resultEl.appendChild(hintBox);
+  resultEl.classList.remove('hidden');
+}
+
+/** Reset de la interfaz antes de generar la siguiente pregunta */
+function resetUI() {
+  resultEl.innerHTML = '';
+  resultEl.classList.add('hidden');
+  hintBtn.classList.add('hidden');
+  nextBtn.classList.add('hidden');
+}
+
+/****************************************************
+ *         MANEJO DE LA RACHA (ESTRELLAS)           *
+ ****************************************************/
 function updateStarsUI() {
-  // Racha mínima: 0, máxima representada: 5
-  const starsToLight = streak > 5 ? 5 : streak;
+  // Máximo de 5 estrellas a iluminar
+  const starsToLight = (streak > 5) ? 5 : streak;
   for (let i = 0; i < starsEl.length; i++) {
     starsEl[i].style.color = (i < starsToLight) ? '#FFD700' : '#ccc';
   }
 }
 
-/**
- * Muestra un mensaje motivacional cada vez que la racha sea múltiplo de 5.
- */
 function showMotivationalMessage() {
   const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
   const message = motivationalMessages[randomIndex];
-  
   const msgBox = document.createElement('div');
   msgBox.className = 'tip-box';
   msgBox.innerHTML = `<div class="help-text">${message}</div>`;
-  
   resultEl.appendChild(msgBox);
 }
 
-// Botón "Siguiente"
-nextBtn.addEventListener('click', () => {
-  confetti?.clear();
-  resultEl.innerHTML = '';
-  resultEl.classList.add('hidden');
-  nextBtn.classList.add('hidden');
-  
-  generateQuestion();
-});
+/****************************************************
+ *                UTILIDADES GENERALES              *
+ ****************************************************/
+function randomFromArray(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
