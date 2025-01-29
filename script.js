@@ -18,16 +18,16 @@ const tableTips = {
  * EMOJIS PARA MOSTRAR GRUPOS VISUALMENTE
  *****************************************/
 const tableEmojis = {
-  1: "🍎",  // Manzana
-  2: "🍌",  // Plátano
-  3: "🍇",  // Uvas
-  4: "🍉",  // Sandía
-  5: "🍓",  // Fresas
-  6: "🍊",  // Naranja
-  7: "🍍",  // Piña
-  8: "🍪",  // Galleta
-  9: "🦋",  // Mariposa
-  10: "🔟"  // Símbolo 10
+  1: "🍎",
+  2: "🍌",
+  3: "🍇",
+  4: "🍉",
+  5: "🍓",
+  6: "🍊",
+  7: "🍍",
+  8: "🍪",
+  9: "🦋",
+  10: "🔟"
 };
 
 /**********************************************
@@ -151,7 +151,7 @@ function generateQuestion() {
   attemptsForQuestion = 0;
   isHintShown = false;
 
-  // Ajuste: mostramos el botón de pista desde el inicio de la pregunta:
+  // Mostramos el botón de pista desde el inicio:
   hintBtn.classList.remove('hidden');
 
   // Selecciona una tabla al azar de las elegidas
@@ -185,9 +185,9 @@ function handleCorrectAnswer() {
     showMotivationalMessage();
   }
 
-  // Habilitar botón "Siguiente"
+  // Botón "Siguiente"
   nextBtn.classList.remove('hidden');
-  // Ocultar botón pista (ya no es necesaria)
+  // Ocultar botón pista
   hintBtn.classList.add('hidden');
 }
 
@@ -195,38 +195,35 @@ function handleCorrectAnswer() {
 function handleWrongAnswer() {
   attemptsForQuestion++;
 
-  // Si es el primer error, mostramos emojis + truco (pero NO respuesta)
+  // Primer error: emojis + truco, sin respuesta
   if (attemptsForQuestion === 1) {
-    // Mostramos mensaje de "Intenta de nuevo"
     showResult(false, "¡Inténtalo otra vez!");
-    // Mostramos la pista (emojis + truco), aunque sea auto
     showHint(false);
 
+  // Segundo error: emojis + truco + respuesta
   } else if (attemptsForQuestion === 2) {
-    // Segundo error: mostramos la respuesta
-    showResult(false, `La respuesta correcta es: ${currentQuestion.answer}`);
-    showHint(true); // Ahora sí mostramos la respuesta junto con los emojis
+    showResult(false, `La respuesta es: ${currentQuestion.answer}`);
+    showHint(true);
     // Racha se reinicia
     streak = 0;
     streakCount.textContent = streak;
     updateStarsUI();
-    // Habilitamos "Siguiente"
     nextBtn.classList.remove('hidden');
     hintBtn.classList.add('hidden');
   }
 
-  // Reproducir sonido incorrecto
+  // Sonido
   incorrectSound.play();
 }
 
-/** Muestra u oculta elementos en #result con estilo */
+/** Muestra un mensaje en el #result */
 function showResult(isCorrect, text) {
   resultEl.classList.remove('hidden');
   resultEl.className = isCorrect ? 'correct-message' : 'incorrect-message';
   resultEl.innerHTML = text;
 }
 
-/** Lanza confeti al acertar */
+/** Lanza confetti al acertar */
 function launchConfetti() {
   confetti = new ConfettiGenerator({
     target: 'confetti-canvas',
@@ -239,34 +236,27 @@ function launchConfetti() {
   confetti.render();
 }
 
-/****************************************************
- *     MOSTRAR PISTA: EMOJIS Y TRUCO (SIN RESPUESTA)
- *     Si showAnswer === true, también muestra la respuesta.
- ****************************************************/
+/** Muestra la pista (emojis y truco).
+ *  Si showAnswer = true, también se muestra la respuesta.
+ */
 function showHint(showAnswer) {
-  // Creamos un contenedor de ayuda
   const hintBox = document.createElement('div');
   hintBox.className = 'visual-help';
 
   const emoji = tableEmojis[currentQuestion.table] || "🔵";
   const tip   = tableTips[currentQuestion.table] || "";
 
-  // Construimos las filas de emojis (table grupos, cada grupo con number emojis)
   let rowsHTML = '';
   for (let i = 0; i < currentQuestion.table; i++) {
     rowsHTML += `<div class="emoji-row">${emoji.repeat(currentQuestion.number)}</div>`;
   }
 
-  // Texto explicativo muy simple
-  // showAnswer = true => mostramos la respuesta final
   const responseText = showAnswer 
     ? `<div class="help-text">Respuesta: ${currentQuestion.answer}</div>`
     : "";
 
-  // Un truco muy corto
   const shortTrick = `<div class="help-text">Truco: ${tip}</div>`;
 
-  // Estructura final
   hintBox.innerHTML = `
     <div class="help-text"><strong>Piensa en grupos:</strong></div>
     ${rowsHTML}
@@ -274,12 +264,11 @@ function showHint(showAnswer) {
     ${responseText}
   `;
 
-  // Lo agregamos al #result
   resultEl.appendChild(hintBox);
   resultEl.classList.remove('hidden');
 }
 
-/** Reset de la interfaz antes de generar la siguiente pregunta */
+/** Limpia la UI para la siguiente pregunta */
 function resetUI() {
   resultEl.innerHTML = '';
   resultEl.classList.add('hidden');
@@ -287,17 +276,15 @@ function resetUI() {
   nextBtn.classList.add('hidden');
 }
 
-/****************************************************
- *         MANEJO DE LA RACHA (ESTRELLAS)           *
- ****************************************************/
+/** Actualiza las estrellas (hasta 5) */
 function updateStarsUI() {
-  // Máximo de 5 estrellas a iluminar
   const starsToLight = (streak > 5) ? 5 : streak;
   for (let i = 0; i < starsEl.length; i++) {
     starsEl[i].style.color = (i < starsToLight) ? '#FFD700' : '#ccc';
   }
 }
 
+/** Mensaje motivacional cada 5 aciertos */
 function showMotivationalMessage() {
   const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
   const message = motivationalMessages[randomIndex];
@@ -307,9 +294,7 @@ function showMotivationalMessage() {
   resultEl.appendChild(msgBox);
 }
 
-/****************************************************
- *                UTILIDADES GENERALES              *
- ****************************************************/
+/** Devuelve un elemento aleatorio de un array */
 function randomFromArray(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
