@@ -14,18 +14,17 @@ body {
   color: #333;
 }
 
-/* Contenedor principal */
 .container {
   width: 100%;
-  max-width: 600px; /* Ajusta el ancho máximo para pantallas grandes */
+  max-width: 600px;
   margin: 0 auto;
   padding: 20px;
-  background: white;
+  background: #fff;
   border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Sistema de Progreso (Estrellas + Racha) */
+/* Progreso (estrellas + racha) */
 .progress-container {
   display: flex;
   justify-content: space-between;
@@ -34,7 +33,7 @@ body {
 }
 
 .stars span {
-  color: #ccc; /* Por defecto, "apagadas" */
+  color: #ccc;
   font-size: 24px;
   margin-right: 5px;
 }
@@ -44,7 +43,7 @@ body {
   font-weight: bold;
 }
 
-/* Selector de Tablas */
+/* Selector de tablas */
 .table-selector {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -66,14 +65,14 @@ body {
 
 .table-btn.selected {
   background: #4a90e2;
-  color: white;
+  color: #fff;
   transform: scale(1.05);
 }
 
 /* Botones principales */
 .action-btn {
   background: #f5a623;
-  color: white;
+  color: #fff;
   border: none;
   padding: 15px;
   font-size: 18px;
@@ -126,7 +125,7 @@ body {
   outline: none;
 }
 
-/* Resultados y ayudas */
+/* Mensajes y ayudas */
 #result {
   margin-top: 20px;
   padding: 15px;
@@ -170,12 +169,12 @@ body {
 
 /* Filas de emojis */
 .emoji-row {
-  background: white;
+  background: #fff;
   border-radius: 8px;
   padding: 5px 10px;
   margin: 6px auto;
   width: fit-content;
-  font-size: 20px; /* Ajusta el tamaño de los emojis */
+  font-size: 20px; /* Ajusta el tamaño de los emojis si deseas */
 }
 
 /* Ocultar elementos */
