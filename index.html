@@ -1,180 +1,72 @@
-/* Estilos base */
-html, body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Arial', sans-serif;
-  height: 100%;
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Aprende las Tablas de Multiplicar</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Librería para confeti -->
+  <script src="https://cdn.jsdelivr.net/npm/confetti-js/dist/index.min.js" defer></script>
+  <!-- Script principal -->
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    
+    <!-- Sistema de Progreso -->
+    <div class="progress-container">
+      <div class="stars" title="Cada estrella representa una respuesta correcta consecutiva (máximo 3). Al fallar, se reinicia.">
+        <span>★</span><span>★</span><span>★</span>
+      </div>
+      <div class="streak">Racha: <span id="streak-count">0</span></div>
+    </div>
 
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #333;
-}
+    <!-- Selector de Tablas -->
+    <div class="table-selector">
+      <button class="table-btn" data-table="1">1</button>
+      <button class="table-btn" data-table="2">2</button>
+      <button class="table-btn" data-table="3">3</button>
+      <button class="table-btn" data-table="4">4</button>
+      <button class="table-btn" data-table="5">5</button>
+      <button class="table-btn" data-table="6">6</button>
+      <button class="table-btn" data-table="7">7</button>
+      <button class="table-btn" data-table="8">8</button>
+      <button class="table-btn" data-table="9">9</button>
+      <button class="table-btn" data-table="10">10</button>
+    </div>
 
-/* Contenedor principal */
-.container {
-  width: 100%;
-  max-width: 600px; /* Ajusta este valor según el ancho deseado */
-  margin: 0 auto;
-  padding: 20px;
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
+    <!-- Botón de Inicio -->
+    <button id="start-btn" class="action-btn">Comenzar</button>
 
-/* Sistema de Progreso (Estrellas + Racha) */
-.progress-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
+    <!-- Contenedor de Preguntas -->
+    <div id="question-container" class="hidden">
+      <!-- Pregunta Matemática -->
+      <p id="question" class="math-question"></p>
 
-.stars span {
-  color: #ccc; /* Por defecto, estrellas 'apagadas' */
-  font-size: 24px;
-  margin-right: 5px;
-}
+      <!-- Entrada de Respuesta -->
+      <div class="answer-container">
+        <input type="number" id="answer" inputmode="numeric" placeholder="?" autofocus>
+      </div>
 
-.streak {
-  color: #4a90e2;
-  font-weight: bold;
-}
+      <!-- Botones para Responder y Pasar Siguiente -->
+      <button id="submit-btn" class="action-btn fill">Responder</button>
+      <button id="next-btn" class="action-btn blue hidden">Siguiente</button>
 
-/* Selector de Tablas */
-.table-selector {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  margin: 15px 0;
-  justify-items: center; /* Centra los botones dentro de la rejilla */
-}
+      <!-- Resultado / Mensajes -->
+      <div id="result" class="hidden"></div>
+    </div>
 
-.table-btn {
-  background: #f0f0f0;
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-weight: bold;
-  width: 60px;
-}
+    <!-- Elementos de Audio -->
+    <!-- Sonido correcto (más amigable) -->
+    <audio id="correct-sound" 
+           src="https://assets.mixkit.co/active_storage/sfx/4313/4313-preview.mp3"></audio>
+    <!-- Sonido incorrecto -->
+    <audio id="incorrect-sound" 
+           src="https://assets.mixkit.co/active_storage/sfx/259/259-preview.mp3"></audio>
 
-.table-btn.selected {
-  background: #4a90e2;
-  color: white;
-  transform: scale(1.05);
-}
-
-/* Botones principales */
-.action-btn {
-  background: #f5a623;
-  color: white;
-  border: none;
-  padding: 15px;
-  font-size: 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  width: 100%;
-  margin-top: 10px;
-  transition: background 0.2s;
-  box-sizing: border-box;
-  text-align: center;
-}
-
-.action-btn:hover {
-  background: #d48b1d;
-}
-
-.action-btn.blue {
-  background: #4a90e2;
-}
-
-.action-btn.blue:hover {
-  background: #417cb8;
-}
-
-/* Pregunta y respuesta */
-.math-question {
-  font-size: 40px;
-  margin: 20px 0;
-  font-weight: bold;
-  color: #2c3e50;
-  text-align: center;
-}
-
-.answer-container {
-  text-align: center;
-}
-
-.answer-container input {
-  width: 80%;
-  padding: 12px;
-  font-size: 24px;
-  text-align: center;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  margin: 15px 0;
-}
-
-.answer-container input:focus {
-  border-color: #4a90e2;
-  outline: none;
-}
-
-/* Resultados y ayudas */
-#result {
-  margin-top: 20px;
-  padding: 15px;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.correct-message {
-  color: #27ae60;
-  background: #e8f6ee;
-}
-
-.incorrect-message {
-  color: #e74c3c;
-  background: #fdecea;
-}
-
-.tip-box {
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 8px;
-  margin-top: 15px;
-  border-left: 4px solid #4a90e2;
-  text-align: left; /* Para mostrar texto alineado a la izquierda */
-}
-
-.visual-help {
-  background: #fff3e0;
-  padding: 15px;
-  border-radius: 8px;
-  margin-top: 15px;
-  border-left: 4px solid #f5a623;
-  text-align: left;
-}
-
-.help-text {
-  color: #666;
-  font-size: 14px;
-  margin: 5px 0;
-}
-
-.hidden {
-  display: none;
-}
-
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-}
+    <!-- Canvas para Confeti -->
+    <canvas id="confetti-canvas"></canvas>
+  </div>
+</body>
+</html>
