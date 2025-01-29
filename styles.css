@@ -17,7 +17,7 @@ body {
 /* Contenedor principal */
 .container {
   width: 100%;
-  max-width: 600px; /* Ajusta este valor según el ancho deseado */
+  max-width: 600px; /* Ajusta el ancho máximo para pantallas grandes */
   margin: 0 auto;
   padding: 20px;
   background: white;
@@ -34,7 +34,7 @@ body {
 }
 
 .stars span {
-  color: #ccc; /* Por defecto, estrellas 'apagadas' */
+  color: #ccc; /* Por defecto, "apagadas" */
   font-size: 24px;
   margin-right: 5px;
 }
@@ -50,7 +50,7 @@ body {
   grid-template-columns: repeat(5, 1fr);
   gap: 8px;
   margin: 15px 0;
-  justify-items: center; /* Centra los botones dentro de la rejilla */
+  justify-items: center;
 }
 
 .table-btn {
@@ -150,7 +150,7 @@ body {
   border-radius: 8px;
   margin-top: 15px;
   border-left: 4px solid #4a90e2;
-  text-align: left; /* Para mostrar texto alineado a la izquierda */
+  text-align: left;
 }
 
 .visual-help {
@@ -168,10 +168,22 @@ body {
   margin: 5px 0;
 }
 
+/* Filas de emojis */
+.emoji-row {
+  background: white;
+  border-radius: 8px;
+  padding: 5px 10px;
+  margin: 6px auto;
+  width: fit-content;
+  font-size: 20px; /* Ajusta el tamaño de los emojis */
+}
+
+/* Ocultar elementos */
 .hidden {
   display: none;
 }
 
+/* Canvas para el confeti */
 canvas {
   position: fixed;
   top: 0;
