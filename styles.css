@@ -1,29 +1,31 @@
-/* Estilos Base */
+/* Estilos base */
 html, body {
   margin: 0;
   padding: 0;
   font-family: 'Arial', sans-serif;
   height: 100%;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
 }
 
 body {
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
   display: flex;
   justify-content: center;
   align-items: center;
   color: #333;
 }
 
+/* Contenedor principal */
 .container {
-  width: 90%;
-  max-width: 480px;
+  width: 100%;
+  max-width: 600px; /* Ajusta este valor según el ancho deseado */
+  margin: 0 auto;
   padding: 20px;
   background: white;
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
-/* Sistema de Progreso */
+/* Sistema de Progreso (Estrellas + Racha) */
 .progress-container {
   display: flex;
   justify-content: space-between;
@@ -32,8 +34,9 @@ body {
 }
 
 .stars span {
-  color: #FFD700;
+  color: #ccc; /* Por defecto, estrellas 'apagadas' */
   font-size: 24px;
+  margin-right: 5px;
 }
 
 .streak {
@@ -47,6 +50,7 @@ body {
   grid-template-columns: repeat(5, 1fr);
   gap: 8px;
   margin: 15px 0;
+  justify-items: center; /* Centra los botones dentro de la rejilla */
 }
 
 .table-btn {
@@ -57,6 +61,7 @@ body {
   cursor: pointer;
   transition: all 0.2s;
   font-weight: bold;
+  width: 60px;
 }
 
 .table-btn.selected {
@@ -65,7 +70,7 @@ body {
   transform: scale(1.05);
 }
 
-/* Botones Principales */
+/* Botones principales */
 .action-btn {
   background: #f5a623;
   color: white;
@@ -77,6 +82,8 @@ body {
   width: 100%;
   margin-top: 10px;
   transition: background 0.2s;
+  box-sizing: border-box;
+  text-align: center;
 }
 
 .action-btn:hover {
@@ -91,12 +98,17 @@ body {
   background: #417cb8;
 }
 
-/* Pregunta y Respuesta */
+/* Pregunta y respuesta */
 .math-question {
   font-size: 40px;
   margin: 20px 0;
   font-weight: bold;
   color: #2c3e50;
+  text-align: center;
+}
+
+.answer-container {
+  text-align: center;
 }
 
 .answer-container input {
@@ -114,11 +126,12 @@ body {
   outline: none;
 }
 
-/* Resultados y Ayudas */
+/* Resultados y ayudas */
 #result {
   margin-top: 20px;
   padding: 15px;
   border-radius: 8px;
+  text-align: center;
 }
 
 .correct-message {
@@ -137,6 +150,7 @@ body {
   border-radius: 8px;
   margin-top: 15px;
   border-left: 4px solid #4a90e2;
+  text-align: left; /* Para mostrar texto alineado a la izquierda */
 }
 
 .visual-help {
@@ -145,6 +159,7 @@ body {
   border-radius: 8px;
   margin-top: 15px;
   border-left: 4px solid #f5a623;
+  text-align: left;
 }
 
 .help-text {
