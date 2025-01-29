@@ -3,7 +3,7 @@
  *********************************************/
 const tableTips = {
   1:  "Multiplicar por 1 no cambia el número.",
-  2:  "Forma parejas para contar más fácil.",
+  2:  "Haz parejas para contar más fácil.",
   3:  "Suma 3 veces el mismo número.",
   4:  "Piensa en 2 y 2 (doble del doble).",
   5:  "Cuenta de 5 en 5: 5, 10, 15, 20...",
@@ -15,29 +15,40 @@ const tableTips = {
 };
 
 /*****************************************
- * EMOJIS PARA MOSTRAR GRUPOS VISUALMENTE
+ * EMOJIS VARIADOS PARA MOSTRAR GRUPOS
+ * (se elegirán al azar para cada pregunta)
  *****************************************/
-const tableEmojis = {
-  1: "🍎",
-  2: "🍌",
-  3: "🍇",
-  4: "🍉",
-  5: "🍓",
-  6: "🍊",
-  7: "🍍",
-  8: "🍪",
-  9: "🦋",
-  10: "🔟"
-};
+const kidsEmojis = [
+  "🦄","🌟","🐶","🐱","🐹","🐰","🦊","🐸","🐻","🦁","🐵",
+  "🦋","🐳","🐬","🐙","🐣","🐼","🐧","🐯","🪄","💫","🍭","🍬","🍩","🎉"
+];
 
-/**********************************************
- *  MENSAJES MOTIVACIONALES CADA 5 ACIERTOS   *
- **********************************************/
+/******************************************************
+ *   MENSAJES MOTIVACIONALES CADA 5 ACIERTOS (ES)     *
+ ******************************************************/
 const motivationalMessages = [
   "¡Súper! Sigue así.",
   "¡Muy bien! Eres un campeón.",
   "¡Racha de 5! ¡Felicidades!",
   "¡Estás aprendiendo muy rápido!"
+];
+
+/******************************************************
+ *  MENSAJES DE MAMÁ Y PAPÁ EN ACIERTOS Y ERRORES    *
+ *  (para dar ánimos en español)
+ ******************************************************/
+const positiveMomDadCorrect = [
+  "Mamá: ¡Bravo! ¡Lo hiciste excelente!",
+  "Papá: ¡Estoy muy orgulloso de ti!",
+  "Mamá: ¡Fantástico! ¡Sigue así!",
+  "Papá: ¡Eres mi campeón, muy bien!"
+];
+
+const positiveMomDadWrong = [
+  "Mamá: ¡No pasa nada, tú puedes!",
+  "Papá: ¡Sigue intentando, confío en ti!",
+  "Mamá: ¡Un error no te detendrá!",
+  "Papá: ¡Ánimo, peque! Vamos con todo."
 ];
 
 /***********************************************
@@ -66,8 +77,8 @@ let selectedTables      = [];
 let currentQuestion     = {};
 let confetti;
 let streak              = 0;
-let attemptsForQuestion = 0; // Para saber si es primer error o segundo error
-let isHintShown         = false; // Para saber si ya se mostró la pista en esta pregunta
+let attemptsForQuestion = 0; // para saber si es primer error o segundo error
+let isHintShown         = false; // para saber si ya se mostró la pista
 
 /****************************************************
  *       CONFIGURACIÓN DE EVENTOS PRINCIPALES       *
@@ -101,17 +112,14 @@ startBtn.addEventListener('click', () => {
 submitBtn.addEventListener('click', () => {
   const userAnswer = parseInt(answerEl.value);
 
-  // Si no ha escrito nada
   if (isNaN(userAnswer)) {
     alert('Escribe un número para responder');
     return;
   }
 
   if (userAnswer === currentQuestion.answer) {
-    // Respuesta correcta
     handleCorrectAnswer();
   } else {
-    // Respuesta incorrecta
     handleWrongAnswer();
   }
 });
@@ -145,7 +153,7 @@ function generateQuestion() {
   answerEl.focus();
   nextBtn.classList.add('hidden');
   hintBtn.classList.remove('hidden');
-  hintBtn.classList.add('hidden');  // Ocultamos la pista hasta que inicie la pregunta
+  hintBtn.classList.add('hidden'); // ocultamos la pista hasta que inicie la pregunta
   confetti?.clear();
 
   attemptsForQuestion = 0;
@@ -156,6 +164,7 @@ function generateQuestion() {
 
   // Selecciona una tabla al azar de las elegidas
   const table = randomFromArray(selectedTables);
+  // Número aleatorio del 1 al 10
   const number = Math.floor(Math.random() * 10) + 1;
 
   currentQuestion = {
@@ -169,9 +178,14 @@ function generateQuestion() {
 
 /** Maneja respuesta correcta */
 function handleCorrectAnswer() {
-  // Mostramos mensaje
+  // Mensaje
   showResult(true, "¡Bien hecho! Respuesta correcta.");
-  // Actualizamos racha
+  
+  // Mensaje de Mamá/Papá
+  const cheer = randomFromArray(positiveMomDadCorrect);
+  addExtraMessage(cheer);
+
+  // Racha
   streak++;
   streakCount.textContent = streak;
   updateStarsUI();
@@ -185,9 +199,7 @@ function handleCorrectAnswer() {
     showMotivationalMessage();
   }
 
-  // Botón "Siguiente"
   nextBtn.classList.remove('hidden');
-  // Ocultar botón pista
   hintBtn.classList.add('hidden');
 }
 
@@ -195,19 +207,26 @@ function handleCorrectAnswer() {
 function handleWrongAnswer() {
   attemptsForQuestion++;
 
+  // Mensaje de Mamá/Papá
+  const cheer = randomFromArray(positiveMomDadWrong);
+
   // Primer error: emojis + truco, sin respuesta
   if (attemptsForQuestion === 1) {
     showResult(false, "¡Inténtalo otra vez!");
+    addExtraMessage(cheer); // Mensaje de ánimo
     showHint(false);
 
   // Segundo error: emojis + truco + respuesta
   } else if (attemptsForQuestion === 2) {
     showResult(false, `La respuesta es: ${currentQuestion.answer}`);
+    addExtraMessage(cheer); // Mensaje de ánimo
     showHint(true);
+
     // Racha se reinicia
     streak = 0;
     streakCount.textContent = streak;
     updateStarsUI();
+
     nextBtn.classList.remove('hidden');
     hintBtn.classList.add('hidden');
   }
@@ -216,14 +235,23 @@ function handleWrongAnswer() {
   incorrectSound.play();
 }
 
-/** Muestra un mensaje en el #result */
+/** Muestra un mensaje principal en #result */
 function showResult(isCorrect, text) {
   resultEl.classList.remove('hidden');
   resultEl.className = isCorrect ? 'correct-message' : 'incorrect-message';
   resultEl.innerHTML = text;
 }
 
-/** Lanza confetti al acertar */
+/** Agrega un mensaje extra (mamá/papá) debajo del principal en el #result */
+function addExtraMessage(msg) {
+  const msgBox = document.createElement('div');
+  msgBox.className = 'help-text';
+  msgBox.style.marginTop = '10px';
+  msgBox.textContent = msg;
+  resultEl.appendChild(msgBox);
+}
+
+/** Lanza confeti al acertar */
 function launchConfetti() {
   confetti = new ConfettiGenerator({
     target: 'confetti-canvas',
@@ -237,13 +265,14 @@ function launchConfetti() {
 }
 
 /** Muestra la pista (emojis y truco).
- *  Si showAnswer = true, también se muestra la respuesta.
+ *  Si showAnswer = true, también muestra la respuesta.
  */
 function showHint(showAnswer) {
   const hintBox = document.createElement('div');
   hintBox.className = 'visual-help';
 
-  const emoji = tableEmojis[currentQuestion.table] || "🔵";
+  // Escogemos un emoji al azar para cada pregunta
+  const emoji = randomFromArray(kidsEmojis);
   const tip   = tableTips[currentQuestion.table] || "";
 
   let rowsHTML = '';
@@ -284,7 +313,7 @@ function updateStarsUI() {
   }
 }
 
-/** Mensaje motivacional cada 5 aciertos */
+/** Muestra un mensaje motivacional cada 5 aciertos */
 function showMotivationalMessage() {
   const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
   const message = motivationalMessages[randomIndex];
