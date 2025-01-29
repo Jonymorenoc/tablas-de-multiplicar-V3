@@ -1,7 +1,19 @@
+const tableTips = {
+  1: "Recuerda: cualquier número multiplicado por 1 es igual a sí mismo.",
+  2: "Truco: suma el número dos veces. Ejemplo: 2×4 = 4 + 4",
+  3: "Suma el número tres veces. 3×5 = 5 + 5 + 5",
+  4: "Dobla el resultado de la tabla del 2. 4×3 = 2×3 + 2×3",
+  5: "Los resultados siempre terminan en 0 o 5.",
+  6: "Dobla la tabla del 3. 6×4 = 3×4 + 3×4",
+  7: "Secuencia: 7, 14, 21, 28, 35, 42, 49, 56, 63, 70",
+  8: "Dobla la tabla del 4. 8×3 = 4×3 + 4×3",
+  9: "Truco de los dedos: baja un dedo para cada multiplicación.",
+  10: "Agrega un 0 al número. 10×4 = 40"
+};
+
 const startBtn = document.getElementById('start-btn');
 const tableButtons = document.querySelectorAll('.table-btn');
 const questionContainer = document.getElementById('question-container');
-const emojiRows = document.getElementById('emoji-rows');
 const questionEl = document.getElementById('question');
 const answerEl = document.getElementById('answer');
 const resultEl = document.getElementById('result');
@@ -15,9 +27,10 @@ let selectedTables = [];
 let currentQuestion = {};
 let confetti;
 let streak = 0;
-const mistakeTracker = {};
+let consecutiveFails = 0;
+let lastFailedTable = null;
 
-// Table Selection
+// Selección de tablas
 tableButtons.forEach(button => {
   button.addEventListener('click', () => {
     button.classList.toggle('selected');
@@ -31,147 +44,131 @@ tableButtons.forEach(button => {
   });
 });
 
-// Start Quiz
+// Iniciar juego
 startBtn.addEventListener('click', () => {
   if (selectedTables.length === 0) {
-    alert('Selecciona al menos una tabla.');
+    alert('¡Selecciona al menos una tabla!');
     return;
   }
-
   questionContainer.classList.remove('hidden');
   generateQuestion();
 });
 
-// Question Generator
+// Generar pregunta
 function generateQuestion() {
-  resultEl.classList.add('hidden');
-  nextBtn.classList.add('hidden');
+  resultEl.innerHTML = '';
   answerEl.value = '';
   answerEl.focus();
-
-  if (confetti) confetti.clear();
-
-  // Get weighted table based on mistakes
+  
   const weightedTables = selectedTables.flatMap(table => 
-    Array(10 - (mistakeTracker[table] || 0)).fill(table)
+    Array(10 - (consecutiveFails > 1 && table === lastFailedTable ? 5 : 0)).fill(table)
   );
   
   const table = weightedTables[Math.floor(Math.random() * weightedTables.length)];
   const number = Math.floor(Math.random() * 10) + 1;
-
-  currentQuestion = { table, number, answer: table * number };
-
-  // Create emoji visualization
-  const emojis = ['🍎', '🐶', '🎈', '🍇', '🐱', '🦄', '🐼', '🚗', '🍉', '🌟', '🐣'];
-  const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-
-  emojiRows.innerHTML = '';
-  for (let i = 0; i < table; i++) {
-    const row = document.createElement('div');
-    row.classList.add('emoji-row');
-    row.innerHTML = Array(number).fill(`<span>${randomEmoji}</span>`).join('');
-    emojiRows.appendChild(row);
-  }
-
+  
+  currentQuestion = {
+    table,
+    number,
+    answer: table * number
+  };
+  
   questionEl.textContent = `${table} × ${number}`;
 }
 
-// Answer Handling
+// Manejar respuesta
 submitBtn.addEventListener('click', () => {
   const userAnswer = parseInt(answerEl.value);
-
+  
   if (isNaN(userAnswer)) {
-    alert('Por favor ingresa un número.');
+    alert('Escribe un número para responder');
     return;
   }
 
-  resultEl.classList.remove('hidden');
   const isCorrect = userAnswer === currentQuestion.answer;
-
-  if (isCorrect) {
-    handleCorrectAnswer();
-  } else {
-    handleIncorrectAnswer();
-  }
-
+  handleAnswerFeedback(isCorrect);
   updateStreak(isCorrect);
+  showTips(isCorrect);
+  
+  if (!isCorrect) {
+    consecutiveFails++;
+    lastFailedTable = currentQuestion.table;
+    if (consecutiveFails >= 2) {
+      showVisualHelp();
+    }
+  } else {
+    consecutiveFails = 0;
+  }
+  
   nextBtn.classList.remove('hidden');
 });
 
-function handleCorrectAnswer() {
-  resultEl.textContent = '¡Correcto! 🎉';
-  correctSound.play();
-  
-  // Add celebration effects
-  document.querySelectorAll('.emoji-row').forEach(row => {
-    row.classList.add('correct-glow');
-    setTimeout(() => row.classList.remove('correct-glow'), 1000);
-  });
+function handleAnswerFeedback(isCorrect) {
+  resultEl.classList.remove('hidden');
+  resultEl.className = isCorrect ? 'correct-message' : 'incorrect-message';
+  resultEl.innerHTML = isCorrect ? 
+    '¡Correcto! 🎉' : 
+    `Incorrecto ❌<br>Respuesta correcta: ${currentQuestion.answer}`;
 
-  confetti = new ConfettiGenerator({
-    target: 'confetti-canvas',
-    max: 150,
-    size: 1.2,
-    animate: true,
-    colors: [[165, 104, 246], [230, 61, 135], [0, 199, 228], [253, 214, 126]],
-    clock: 30
-  }).render();
+  (isCorrect ? correctSound : incorrectSound).play();
+  
+  if (isCorrect) {
+    confetti = new ConfettiGenerator({
+      target: 'confetti-canvas',
+      max: 80,
+      size: 1,
+      animate: true,
+      colors: [[74, 144, 226], [245, 166, 35], [46, 204, 113]],
+      clock: 25
+    }).render();
+  }
 }
 
-function handleIncorrectAnswer() {
-  resultEl.innerHTML = `Incorrecto. La respuesta era <span class="incorrect-answer">${currentQuestion.answer}</span>.`;
-  incorrectSound.play();
-  
-  // Track mistakes
-  mistakeTracker[currentQuestion.table] = (mistakeTracker[currentQuestion.table] || 0) + 1;
-  
-  // Show visual helper
-  showVisualHelper();
-}
-
-function showVisualHelper() {
-  const helper = document.createElement('div');
-  helper.className = 'visual-helper';
-  helper.innerHTML = `
-    <p style="color: #666; margin-top: 15px;">${currentQuestion.table} grupos de ${currentQuestion.number}:</p>
-    <div class="groups">
-      ${Array(currentQuestion.number).fill()
-       .map(() => `<div class="group">${Array(currentQuestion.table)
-         .fill('⭐').join('')}</div>`).join(' + ')}
-    </div>
+function showTips(isCorrect) {
+  const tipBox = document.createElement('div');
+  tipBox.className = 'tip-box';
+  tipBox.innerHTML = `
+    <div class="help-text">${tableTips[currentQuestion.table]}</div>
+    ${!isCorrect ? `<div class="help-text">Ejemplo: ${currentQuestion.table}×${currentQuestion.number} = ${currentQuestion.answer}</div>` : ''}
   `;
-  questionContainer.appendChild(helper);
+  resultEl.appendChild(tipBox);
 }
 
-// Streak System
+function showVisualHelp() {
+  const visualHelp = document.createElement('div');
+  visualHelp.className = 'visual-help';
+  visualHelp.innerHTML = `
+    <div class="help-text">${currentQuestion.table} grupos de ${currentQuestion.number}:</div>
+    <div class="help-text">${Array(currentQuestion.number).fill(currentQuestion.table).join(' + ')} = ${currentQuestion.answer}</div>
+  `;
+  resultEl.appendChild(visualHelp);
+}
+
 function updateStreak(isCorrect) {
   streak = isCorrect ? streak + 1 : 0;
   streakCount.textContent = streak;
-
-  if (isCorrect && streak % 5 === 0 && streak !== 0) {
+  
+  if (isCorrect && streak % 5 === 0 && streak > 0) {
     showMotivationalMessage();
   }
 }
 
 function showMotivationalMessage() {
   const messages = [
-    "¡Racha de 5! 🔥",
-    "¡Increíble! 🚀",
     "¡Sigue así! 💪",
-    "¡Eres un genio! 🧠"
+    "¡Estás mejorando! 🚀",
+    "¡Racha de 5! 🔥",
+    "¡Eres un crack! 🏆"
   ];
-  const message = messages[Math.floor(Math.random() * messages.length)];
-  
-  const messageEl = document.createElement('div');
-  messageEl.className = 'motivational-message';
-  messageEl.textContent = message;
-  document.body.appendChild(messageEl);
-  
-  setTimeout(() => messageEl.remove(), 2000);
+  const message = document.createElement('div');
+  message.className = 'tip-box';
+  message.textContent = messages[Math.floor(Math.random() * messages.length)];
+  resultEl.appendChild(message);
 }
 
-// Next Question
+// Siguiente pregunta
 nextBtn.addEventListener('click', () => {
-  document.querySelector('.visual-helper')?.remove();
+  confetti?.clear();
   generateQuestion();
+  nextBtn.classList.add('hidden');
 });
