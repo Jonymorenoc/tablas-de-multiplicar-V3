@@ -1,4 +1,4 @@
-/* Base Styles */
+/* Estilos Base */
 html, body {
   margin: 0;
   padding: 0;
@@ -18,13 +18,12 @@ body {
   width: 90%;
   max-width: 480px;
   padding: 20px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  text-align: center;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
-/* Progress System */
+/* Sistema de Progreso */
 .progress-container {
   display: flex;
   justify-content: space-between;
@@ -33,18 +32,16 @@ body {
 }
 
 .stars span {
-  color: #ffd700;
+  color: #FFD700;
   font-size: 24px;
-  margin: 0 2px;
 }
 
 .streak {
-  font-size: 16px;
   color: #4a90e2;
   font-weight: bold;
 }
 
-/* Table Selector */
+/* Selector de Tablas */
 .table-selector {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -53,7 +50,7 @@ body {
 }
 
 .table-btn {
-  background: #e0e0e0;
+  background: #f0f0f0;
   border: none;
   padding: 12px;
   border-radius: 8px;
@@ -65,117 +62,95 @@ body {
 .table-btn.selected {
   background: #4a90e2;
   color: white;
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
-/* Buttons */
+/* Botones Principales */
 .action-btn {
-  background-color: #f5a623;
-  color: #fff;
+  background: #f5a623;
+  color: white;
   border: none;
-  padding: 14px;
+  padding: 15px;
   font-size: 18px;
   border-radius: 8px;
   cursor: pointer;
   width: 100%;
   margin-top: 10px;
-  transition: background-color 0.2s ease;
+  transition: background 0.2s;
 }
 
 .action-btn:hover {
-  background-color: #d48b1d;
+  background: #d48b1d;
 }
 
 .action-btn.blue {
-  background-color: #4a90e2;
+  background: #4a90e2;
 }
 
 .action-btn.blue:hover {
-  background-color: #417cb8;
+  background: #417cb8;
 }
 
-/* Emoji Box */
-.emoji-box {
-  border: 2px solid #4a90e2;
-  background-color: rgba(74, 144, 226, 0.08);
-  padding: 12px;
-  border-radius: 12px;
+/* Pregunta y Respuesta */
+.math-question {
+  font-size: 40px;
   margin: 20px 0;
-  display: flex;
-  justify-content: center;
+  font-weight: bold;
+  color: #2c3e50;
 }
 
-.emoji-rows {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.emoji-row {
-  display: flex;
-  gap: 5px;
-  justify-content: center;
-  border: 1px solid #ddd;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 8px;
-  transition: all 0.3s;
-}
-
-.emoji-row.correct-glow {
-  animation: glow 1s ease;
-}
-
-@keyframes glow {
-  50% { box-shadow: 0 0 15px #4a90e2; }
-}
-
-/* Animations */
-.correct-answer-animation {
-  animation: bounce 0.5s ease;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-.emoji-celebration {
-  animation: float 3s ease-out;
-}
-
-@keyframes float {
-  0% { transform: translateY(0); opacity: 1; }
-  100% { transform: translateY(-100px); opacity: 0; }
-}
-
-/* Answer Input */
 .answer-container input {
-  font-size: 20px;
-  padding: 10px;
-  width: 60%;
+  width: 80%;
+  padding: 12px;
+  font-size: 24px;
   text-align: center;
-  border: 2px solid #ccc;
+  border: 2px solid #ddd;
   border-radius: 8px;
-  margin-bottom: 16px;
-  outline: none;
-  transition: border-color 0.2s ease;
+  margin: 15px 0;
 }
 
 .answer-container input:focus {
   border-color: #4a90e2;
+  outline: none;
 }
 
-/* Result Message */
+/* Resultados y Ayudas */
 #result {
-  margin-top: 16px;
-  font-size: 18px;
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
 }
 
-.incorrect-answer {
-  color: red;
-  font-weight: bold;
-  font-size: 1.2em;
+.correct-message {
+  color: #27ae60;
+  background: #e8f6ee;
+}
+
+.incorrect-message {
+  color: #e74c3c;
+  background: #fdecea;
+}
+
+.tip-box {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  border-left: 4px solid #4a90e2;
+}
+
+.visual-help {
+  background: #fff3e0;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  border-left: 4px solid #f5a623;
+}
+
+.help-text {
+  color: #666;
+  font-size: 14px;
+  margin: 5px 0;
 }
 
 .hidden {
@@ -183,7 +158,7 @@ body {
 }
 
 canvas {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   pointer-events: none;
