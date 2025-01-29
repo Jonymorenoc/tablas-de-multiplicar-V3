@@ -57,7 +57,7 @@ body {
 .table-selector {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 10px; /* Más cerca, pero no pegados */
+  gap: 5px; /* Espacio más compacto */
   margin: 10px 0 25px 0;
   justify-items: center;
 }
