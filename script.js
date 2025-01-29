@@ -16,7 +16,6 @@ const tableTips = {
 
 /*****************************************
  * EMOJIS VARIADOS PARA MOSTRAR GRUPOS
- * (se elegirán al azar para cada pregunta)
  *****************************************/
 const kidsEmojis = [
   "🦄","🌟","🐶","🐱","🐹","🐰","🦊","🐸","🐻","🦁","🐵",
@@ -35,7 +34,6 @@ const motivationalMessages = [
 
 /******************************************************
  *  MENSAJES DE MAMÁ Y PAPÁ EN ACIERTOS Y ERRORES    *
- *  (para dar ánimos en español)
  ******************************************************/
 const positiveMomDadCorrect = [
   "Mamá: ¡Bravo! ¡Lo hiciste excelente!",
@@ -77,8 +75,11 @@ let selectedTables      = [];
 let currentQuestion     = {};
 let confetti;
 let streak              = 0;
-let attemptsForQuestion = 0; // para saber si es primer error o segundo error
-let isHintShown         = false; // para saber si ya se mostró la pista
+let attemptsForQuestion = 0;
+let isHintShown         = false;
+
+/** Historial para evitar repetir la misma operación durante 5 turnos. */
+const lastQuestions     = []; // guardará objetos {table, number}
 
 /****************************************************
  *       CONFIGURACIÓN DE EVENTOS PRINCIPALES       *
@@ -124,7 +125,7 @@ submitBtn.addEventListener('click', () => {
   }
 });
 
-// Botón "Pista" (muestra emojis y truco, sin la respuesta)
+// Botón "Pista"
 hintBtn.addEventListener('click', () => {
   if (!isHintShown) {
     showHint(false);
@@ -139,11 +140,14 @@ nextBtn.addEventListener('click', () => {
   generateQuestion();
 });
 
-/***************************************************
- *    FUNCIONES: GENERAR PREGUNTA, EVALUAR RESULT  *
- ***************************************************/
+/***********************************************
+ *           FUNCIONES PRINCIPALES            *
+ ***********************************************/
 
-/** Genera una nueva pregunta y resetea estado */
+/**
+ * Genera una nueva pregunta, evitando repetir la misma operación
+ * de las últimas 5 preguntas.
+ */
 function generateQuestion() {
   // Limpia la UI
   questionEl.textContent = '';
@@ -153,48 +157,69 @@ function generateQuestion() {
   answerEl.focus();
   nextBtn.classList.add('hidden');
   hintBtn.classList.remove('hidden');
-  hintBtn.classList.add('hidden'); // ocultamos la pista hasta que inicie la pregunta
+  hintBtn.classList.add('hidden');
   confetti?.clear();
 
   attemptsForQuestion = 0;
   isHintShown = false;
 
-  // Mostramos el botón de pista desde el inicio:
   hintBtn.classList.remove('hidden');
 
-  // Selecciona una tabla al azar de las elegidas
-  const table = randomFromArray(selectedTables);
-  // Número aleatorio del 1 al 10
-  const number = Math.floor(Math.random() * 10) + 1;
+  // 1. Construimos un arreglo con todas las combinaciones (table, number).
+  const allCombos = [];
+  selectedTables.forEach(table => {
+    for (let num = 1; num <= 10; num++) {
+      allCombos.push({ table, number: num, answer: table * num });
+    }
+  });
 
-  currentQuestion = {
-    table,
-    number,
-    answer: table * number
-  };
+  // 2. Intentamos elegir un combo que no esté en "lastQuestions" (últimos 5).
+  let newQuestion = null;
+  let tries = 0;
+  while (tries < 50) {
+    const candidate = randomFromArray(allCombos);
+    // Verificamos si candidate ya apareció en las últimas 5 preguntas
+    const isRepeated = lastQuestions.some(
+      q => q.table === candidate.table && q.number === candidate.number
+    );
 
-  questionEl.textContent = `${table} × ${number}`;
+    if (!isRepeated) {
+      newQuestion = candidate;
+      break;
+    }
+    tries++;
+  }
+
+  // Si no encontramos un combo nuevo (pocas combos o tries agotados),
+  // tomamos cualquier combo aleatorio y permitimos la repetición.
+  if (!newQuestion) {
+    newQuestion = randomFromArray(allCombos);
+  }
+
+  currentQuestion = newQuestion;
+  questionEl.textContent = `${newQuestion.table} × ${newQuestion.number}`;
+
+  // 3. Actualizamos el historial
+  lastQuestions.push({ table: newQuestion.table, number: newQuestion.number });
+  if (lastQuestions.length > 5) {
+    lastQuestions.shift(); // eliminamos el más antiguo si ya hay 6
+  }
 }
 
 /** Maneja respuesta correcta */
 function handleCorrectAnswer() {
-  // Mensaje
   showResult(true, "¡Bien hecho! Respuesta correcta.");
   
-  // Mensaje de Mamá/Papá
   const cheer = randomFromArray(positiveMomDadCorrect);
   addExtraMessage(cheer);
 
-  // Racha
   streak++;
   streakCount.textContent = streak;
   updateStarsUI();
 
-  // Sonido + confeti
   correctSound.play();
   launchConfetti();
 
-  // Mensaje motivacional cada 5
   if (streak > 0 && streak % 5 === 0) {
     showMotivationalMessage();
   }
@@ -207,22 +232,17 @@ function handleCorrectAnswer() {
 function handleWrongAnswer() {
   attemptsForQuestion++;
 
-  // Mensaje de Mamá/Papá
   const cheer = randomFromArray(positiveMomDadWrong);
 
-  // Primer error: emojis + truco, sin respuesta
   if (attemptsForQuestion === 1) {
     showResult(false, "¡Inténtalo otra vez!");
-    addExtraMessage(cheer); // Mensaje de ánimo
+    addExtraMessage(cheer);
     showHint(false);
-
-  // Segundo error: emojis + truco + respuesta
   } else if (attemptsForQuestion === 2) {
     showResult(false, `La respuesta es: ${currentQuestion.answer}`);
-    addExtraMessage(cheer); // Mensaje de ánimo
-    showHint(true);
+    addExtraMessage(cheer);
 
-    // Racha se reinicia
+    showHint(true);
     streak = 0;
     streakCount.textContent = streak;
     updateStarsUI();
@@ -231,18 +251,17 @@ function handleWrongAnswer() {
     hintBtn.classList.add('hidden');
   }
 
-  // Sonido
   incorrectSound.play();
 }
 
-/** Muestra un mensaje principal en #result */
+/** Muestra un mensaje principal (correcto/incorrecto) */
 function showResult(isCorrect, text) {
   resultEl.classList.remove('hidden');
   resultEl.className = isCorrect ? 'correct-message' : 'incorrect-message';
   resultEl.innerHTML = text;
 }
 
-/** Agrega un mensaje extra (mamá/papá) debajo del principal en el #result */
+/** Mensaje extra debajo del principal */
 function addExtraMessage(msg) {
   const msgBox = document.createElement('div');
   msgBox.className = 'help-text';
@@ -251,27 +270,11 @@ function addExtraMessage(msg) {
   resultEl.appendChild(msgBox);
 }
 
-/** Lanza confeti al acertar */
-function launchConfetti() {
-  confetti = new ConfettiGenerator({
-    target: 'confetti-canvas',
-    max: 80,
-    size: 1,
-    animate: true,
-    colors: [[74, 144, 226], [245, 166, 35], [46, 204, 113]],
-    clock: 25
-  });
-  confetti.render();
-}
-
-/** Muestra la pista (emojis y truco).
- *  Si showAnswer = true, también muestra la respuesta.
- */
+/** Muestra la pista (emojis y truco) */
 function showHint(showAnswer) {
   const hintBox = document.createElement('div');
   hintBox.className = 'visual-help';
 
-  // Escogemos un emoji al azar para cada pregunta
   const emoji = randomFromArray(kidsEmojis);
   const tip   = tableTips[currentQuestion.table] || "";
 
@@ -305,6 +308,19 @@ function resetUI() {
   nextBtn.classList.add('hidden');
 }
 
+/** Lanza confeti al acertar */
+function launchConfetti() {
+  confetti = new ConfettiGenerator({
+    target: 'confetti-canvas',
+    max: 80,
+    size: 1,
+    animate: true,
+    colors: [[74, 144, 226], [245, 166, 35], [46, 204, 113]],
+    clock: 25
+  });
+  confetti.render();
+}
+
 /** Actualiza las estrellas (hasta 5) */
 function updateStarsUI() {
   const starsToLight = (streak > 5) ? 5 : streak;
@@ -315,8 +331,7 @@ function updateStarsUI() {
 
 /** Muestra un mensaje motivacional cada 5 aciertos */
 function showMotivationalMessage() {
-  const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
-  const message = motivationalMessages[randomIndex];
+  const message = randomFromArray(motivationalMessages);
   const msgBox = document.createElement('div');
   msgBox.className = 'tip-box';
   msgBox.innerHTML = `<div class="help-text">${message}</div>`;
