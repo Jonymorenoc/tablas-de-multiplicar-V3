@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, maximum-scale=1.0, user-scalable=no">
-  <title>Aprende las Tablas de Multiplicar</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no" />
+  <title>Aprende Multiplicando</title>
+  <link rel="stylesheet" href="styles.css" />
   <!-- Librería para confeti -->
   <script src="https://cdn.jsdelivr.net/npm/confetti-js/dist/index.min.js" defer></script>
   <!-- Script principal -->
@@ -13,12 +12,10 @@
 </head>
 <body>
   <div class="container">
-    
-    <!-- Sistema de Progreso -->
+    <!-- Encabezado de progreso -->
     <div class="progress-container">
-      <!-- 5 Estrellas: cada una representa una respuesta correcta consecutiva (máx 5). -->
-      <div class="stars" 
-           title="Cada estrella se ilumina con un acierto consecutivo, hasta 5. Al fallar se reinicia.">
+      <!-- 5 estrellas para la racha -->
+      <div class="stars" title="Cada estrella se ilumina por un acierto consecutivo, hasta 5. Al fallar se reinicia.">
         <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
       </div>
       <div class="streak">
@@ -26,7 +23,7 @@
       </div>
     </div>
 
-    <!-- Selector de Tablas -->
+    <!-- Selector de tablas -->
     <div class="table-selector">
       <button class="table-btn" data-table="1">1</button>
       <button class="table-btn" data-table="2">2</button>
@@ -40,36 +37,32 @@
       <button class="table-btn" data-table="10">10</button>
     </div>
 
-    <!-- Botón de Inicio -->
+    <!-- Botón para iniciar -->
     <button id="start-btn" class="action-btn">Comenzar</button>
 
-    <!-- Contenedor de Preguntas -->
+    <!-- Contenedor de la pregunta -->
     <div id="question-container" class="hidden">
-      <!-- Pregunta Matemática -->
       <p id="question" class="math-question"></p>
-
-      <!-- Entrada de Respuesta -->
+      
+      <!-- Caja de respuesta -->
       <div class="answer-container">
-        <input type="number" id="answer" inputmode="numeric" placeholder="?" autofocus>
+        <input type="number" id="answer" inputmode="numeric" placeholder="?" autofocus />
       </div>
 
-      <!-- Botones para Responder y Pasar Siguiente -->
+      <!-- Botones -->
       <button id="submit-btn" class="action-btn fill">Responder</button>
+      <button id="hint-btn" class="action-btn blue hidden">Pista</button>
       <button id="next-btn" class="action-btn blue hidden">Siguiente</button>
 
-      <!-- Resultado / Mensajes -->
+      <!-- Mensajes de resultado o ayuda -->
       <div id="result" class="hidden"></div>
     </div>
 
-    <!-- Elementos de Audio -->
-    <!-- Sonido correcto (más amigable) -->
-    <audio id="correct-sound" 
-           src="https://assets.mixkit.co/active_storage/sfx/4313/4313-preview.mp3"></audio>
-    <!-- Sonido incorrecto -->
-    <audio id="incorrect-sound" 
-           src="https://assets.mixkit.co/active_storage/sfx/259/259-preview.mp3"></audio>
+    <!-- Sonidos -->
+    <audio id="correct-sound" src="https://assets.mixkit.co/active_storage/sfx/4313/4313-preview.mp3"></audio>
+    <audio id="incorrect-sound" src="https://assets.mixkit.co/active_storage/sfx/259/259-preview.mp3"></audio>
 
-    <!-- Canvas para Confeti -->
+    <!-- Canvas para confeti -->
     <canvas id="confetti-canvas"></canvas>
   </div>
 </body>
