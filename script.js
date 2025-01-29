@@ -27,7 +27,6 @@ const kidsEmojis = [
  ******************************************************/
 const motivationalMessages = [
   "¡Súper! Sigue así.",
-  "¡Muy bien! Eres un campeón.",
   "¡Racha de 5! ¡Felicidades!",
   "¡Estás aprendiendo muy rápido!"
 ];
@@ -39,14 +38,13 @@ const positiveMomDadCorrect = [
   "Mamá: ¡Bravo! ¡Lo hiciste excelente!",
   "Papá: ¡Estoy muy orgulloso de ti!",
   "Mamá: ¡Fantástico! ¡Sigue así!",
-  "Papá: ¡Eres mi campeón, muy bien!"
 ];
 
 const positiveMomDadWrong = [
   "Mamá: ¡No pasa nada, tú puedes!",
   "Papá: ¡Sigue intentando, confío en ti!",
   "Mamá: ¡Un error no te detendrá!",
-  "Papá: ¡Ánimo, peque! Vamos con todo."
+  "Papá: ¡Ánimo, amor! Vamos con todo."
 ];
 
 /***********************************************
