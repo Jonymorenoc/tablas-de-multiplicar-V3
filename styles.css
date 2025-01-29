@@ -18,7 +18,7 @@ body {
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px 25px; /* Pequeño padding extra */
   background: #fff;
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
@@ -29,7 +29,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin: 15px 0 25px 0;
 }
 
 .stars span {
@@ -43,12 +43,22 @@ body {
   font-weight: bold;
 }
 
+/* Texto de invitación a seleccionar tablas */
+.select-tables-label {
+  margin: 0;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+}
+
 /* Selector de tablas */
 .table-selector {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  margin: 15px 0;
+  gap: 10px; /* Más cerca, pero no pegados */
+  margin: 10px 0 25px 0;
   justify-items: center;
 }
 
@@ -79,7 +89,7 @@ body {
   border-radius: 8px;
   cursor: pointer;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 12px; /* Más espacio vertical */
   transition: background 0.2s;
   box-sizing: border-box;
   text-align: center;
@@ -108,6 +118,7 @@ body {
 
 .answer-container {
   text-align: center;
+  margin-bottom: 10px;
 }
 
 .answer-container input {
@@ -174,7 +185,7 @@ body {
   padding: 5px 10px;
   margin: 6px auto;
   width: fit-content;
-  font-size: 20px; /* Ajusta el tamaño de los emojis si deseas */
+  font-size: 20px;
 }
 
 /* Ocultar elementos */
