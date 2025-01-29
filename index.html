@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" 
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport"
+        content="width=device-width, maximum-scale=1.0, user-scalable=no">
   <title>Aprende las Tablas de Multiplicar</title>
   <link rel="stylesheet" href="styles.css">
   <!-- Librería para confeti -->
@@ -16,10 +16,14 @@
     
     <!-- Sistema de Progreso -->
     <div class="progress-container">
-      <div class="stars" title="Cada estrella representa una respuesta correcta consecutiva (máximo 3). Al fallar, se reinicia.">
-        <span>★</span><span>★</span><span>★</span>
+      <!-- 5 Estrellas: cada una representa una respuesta correcta consecutiva (máx 5). -->
+      <div class="stars" 
+           title="Cada estrella se ilumina con un acierto consecutivo, hasta 5. Al fallar se reinicia.">
+        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
       </div>
-      <div class="streak">Racha: <span id="streak-count">0</span></div>
+      <div class="streak">
+        Racha: <span id="streak-count">0</span>
+      </div>
     </div>
 
     <!-- Selector de Tablas -->
