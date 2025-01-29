@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no" />
-  <title>Tablas de Multiplicar</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Aprende las Tablas de Multiplicar</title>
+  <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/confetti-js/dist/index.min.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body>
   <div class="container">
-    <!-- Progress System -->
+    <!-- Sistema de Progreso -->
     <div class="progress-container">
       <div class="stars">
         <span>★</span><span>★</span><span>★</span>
@@ -18,7 +18,7 @@
       <div class="streak">Racha: <span id="streak-count">0</span></div>
     </div>
 
-    <!-- Table Selector -->
+    <!-- Selector de Tablas -->
     <div class="table-selector">
       <button class="table-btn" data-table="1">1</button>
       <button class="table-btn" data-table="2">2</button>
@@ -32,43 +32,32 @@
       <button class="table-btn" data-table="10">10</button>
     </div>
 
-    <!-- Start Button -->
+    <!-- Botón de Inicio -->
     <button id="start-btn" class="action-btn">Comenzar</button>
 
-    <!-- Question Container -->
+    <!-- Contenedor de Preguntas -->
     <div id="question-container" class="hidden">
-      <!-- Emoji Section -->
-      <div class="emoji-box">
-        <div id="emoji-rows" class="emoji-rows"></div>
-      </div>
-
-      <!-- Math Question -->
+      <!-- Pregunta Matemática -->
       <p id="question" class="math-question"></p>
 
-      <!-- Answer input -->
+      <!-- Entrada de Respuesta -->
       <div class="answer-container">
-        <input
-          type="number"
-          id="answer"
-          inputmode="numeric"
-          pattern="[0-9]*"
-          placeholder="?"
-        />
+        <input type="number" id="answer" inputmode="numeric" placeholder="?" autofocus>
       </div>
 
-      <!-- Buttons -->
+      <!-- Botones -->
       <button id="submit-btn" class="action-btn fill">Responder</button>
       <button id="next-btn" class="action-btn blue hidden">Siguiente</button>
 
-      <!-- Result Message -->
-      <p id="result" class="hidden"></p>
+      <!-- Resultado y Ayudas -->
+      <div id="result" class="hidden"></div>
     </div>
 
-    <!-- Audio Elements -->
-    <audio id="correct-sound" src="https://assets.mixkit.co/active_storage/sfx/257/257-preview.mp3"></audio>
+    <!-- Elementos de Audio -->
+    <audio id="correct-sound" src="https://assets.mixkit.co/active_storage/sfx/2957/2957-preview.mp3"></audio>
     <audio id="incorrect-sound" src="https://assets.mixkit.co/active_storage/sfx/259/259-preview.mp3"></audio>
 
-    <!-- Confetti canvas -->
+    <!-- Canvas para Confeti -->
     <canvas id="confetti-canvas"></canvas>
   </div>
 </body>
